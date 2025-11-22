@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import {
   Box,
   Stack,
@@ -27,6 +27,7 @@ import {
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRegister } from '../../hooks/auth/useRegister';
 
 const schema = z.object({
   name: z.string().min(3, 'Nombre muy corto'),
@@ -43,6 +44,8 @@ const schema = z.object({
 type FormData = z.infer<typeof schema>;
 
 export default function SignUpPage() {
+  const navigate = useNavigate();
+  const registerMutation = useRegister();
   const [showPass, setShowPass] = useState(false);
   const {
     register,
@@ -63,13 +66,22 @@ export default function SignUpPage() {
     },
   });
 
+  useEffect(() => {
+    if (registerMutation.isSuccess) {
+      navigate('/app', { replace: true });
+    }
+  }, [registerMutation.isSuccess, navigate]);
+
   const onSubmit = (data: FormData) => {
-    // Integrar con /api/auth/register en el siguiente paso
-    console.log('Registro:', data);
+    registerMutation.mutate(data);
   };
 
   const accepted = watch('acceptTerms');
-  const globalError: string | null = null; // FIX: evita condición constante {false && ...}
+  const globalError = registerMutation.isError
+    ? registerMutation.error instanceof Error
+      ? registerMutation.error.message
+      : 'No se pudo crear la cuenta'
+    : null;
 
   return (
     <Box
@@ -227,12 +239,7 @@ export default function SignUpPage() {
                   Términos y Condiciones
                 </Link>{' '}
                 y la{' '}
-                <Link
-                  component={RouterLink}
-                  to="/privacy"
-                  underline="none"
-                  sx={{ color: '#F39C12' }}
-                >
+                <Link component={RouterLink} to="/privacy" underline="none" sx={{ color: '#F39C12' }}>
                   Política de Privacidad
                 </Link>
                 .
@@ -248,7 +255,7 @@ export default function SignUpPage() {
           <Button
             type="submit"
             size="large"
-            disabled={!isValid || !accepted}
+            disabled={!isValid || !accepted || registerMutation.isPending}
             sx={{
               mt: 0.5,
               py: 1.25,
@@ -261,7 +268,7 @@ export default function SignUpPage() {
               '&:hover': { background: 'linear-gradient(180deg,#F0A030 0%, #E08E0E 100%)' },
             }}
           >
-            Crear Cuenta
+            {registerMutation.isPending ? 'Creando cuenta…' : 'Crear Cuenta'}
           </Button>
         </Stack>
       </Stack>

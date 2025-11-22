@@ -1,10 +1,11 @@
-import mongoose from 'mongoose';
-import { env } from './env.js';
+import mongoose from 'mongoose'
 
-export async function connectDB() {
-  if (!env.MONGODB_URI || !env.MONGODB_DB) {
-    throw new Error('Faltan MONGODB_URI o MONGODB_DB en .env');
+export const connectDB = async () => {
+  const uri = process.env.MONGODB_URI
+  if (!uri) {
+    throw new Error('Falta MONGODB_URI en .env')
   }
-  await mongoose.connect(env.MONGODB_URI, { dbName: env.MONGODB_DB });
-  console.log(`[db] connected to ${env.MONGODB_DB}`);
+
+  await mongoose.connect(uri)
+  console.log('[api] MongoDB conectado')
 }

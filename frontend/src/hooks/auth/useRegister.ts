@@ -9,7 +9,11 @@ export function useRegister() {
   return useMutation({
     mutationFn: (dto: RegisterDTO) => authApi.register(dto),
     onSuccess: ({ token, user }) => {
-      setAuth(token, user); // guarda sesión y usuario
+      setAuth(token, {
+        id: user._id,
+        email: user.email,
+        name: user.name ?? undefined,
+      });
     },
   });
 }

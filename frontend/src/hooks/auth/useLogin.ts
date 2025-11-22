@@ -8,6 +8,11 @@ export function useLogin() {
 
   return useMutation({
     mutationFn: (dto: LoginDTO) => authApi.login(dto),
-    onSuccess: ({ token, user }) => setAuth(token, user),
+    onSuccess: ({ token, user }) =>
+      setAuth(token, {
+        id: user._id,
+        email: user.email,
+        name: user.name ?? undefined,
+      }),
   });
 }

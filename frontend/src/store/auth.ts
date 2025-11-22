@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export type AuthUser = {
-  id: string;           // <- usamos `id`, no `_id`
+  id: string; // almacenamos `id` homogéneo para el frontend
   email: string;
   name?: string;
 };
@@ -10,7 +10,7 @@ export type AuthUser = {
 type State = {
   token: string | null;
   user: AuthUser | null;
-  setAuth: (payload: { token: string; user: AuthUser }) => void;
+  setAuth: (token: string, user: AuthUser) => void;
   clearAuth: () => void;
   restoreAuth: () => void; // por compatibilidad con tu App
 };
@@ -21,7 +21,7 @@ export const useAuth = create<State>()(
       token: null,
       user: null,
 
-      setAuth: ({ token, user }) => set({ token, user }),
+      setAuth: (token, user) => set({ token, user }),
 
       clearAuth: () => set({ token: null, user: null }),
 
