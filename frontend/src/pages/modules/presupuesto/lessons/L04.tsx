@@ -4,6 +4,7 @@ import {
   TextField, MenuItem, Button, Chip, Divider, LinearProgress
 } from '@mui/material';
 import LessonShell from '../LessonShell';
+import { useEffect } from 'react';
 
 type Kind = 'income' | 'expense';
 type Mode = 'digital' | 'manual';
@@ -15,6 +16,8 @@ type Entry = {
   category: string;
   note?: string;
 };
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+
 
 const ORANGE = '#F5B041';
 const ORANGE_DK = '#F39C12';
@@ -71,7 +74,12 @@ export default function L04() {
 
   const answeredCount = Number(hasIncome) + Number(hasExpense);
   const progressVal = Math.min(100, answeredCount * 50);
-
+useEffect(() => {
+  if (!complete) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L04')
+    .catch(err => console.error(err));
+}, [complete]);
   return (
     <LessonShell
       id="L04"

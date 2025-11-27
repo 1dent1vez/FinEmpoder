@@ -4,6 +4,9 @@ import {
   TextField, LinearProgress, Chip
 } from '@mui/material';
 import LessonShell from '../LessonShell';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect} from 'react';
+
 
 type Expense = {
   id: string;
@@ -48,7 +51,12 @@ export default function L07() {
   const hasDecisions = decisions >= 1;
   const hitTarget = saved >= Math.max(0, target);
   const complete = hasDecisions && hitTarget;
-
+useEffect(() => {
+  if (!complete) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L07')
+    .catch(err => console.error(err));
+}, [complete]);
   const progress =
     Math.min(100, Math.round((saved / Math.max(1, target)) * 100));
 

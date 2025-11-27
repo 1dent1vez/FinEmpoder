@@ -8,6 +8,8 @@ import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import ReplayIcon from '@mui/icons-material/Replay';
 import LessonShell from '../LessonShell';
 import { useLessons } from '../../../../store/lessons';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect } from 'react';
 
 type Strength = { label: string; reason: string };
 type Advice = { label: string; action: string; goTo?: string };
@@ -81,7 +83,12 @@ export default function L13() {
   }, [lessons, weakest]);
 
   const done = ack; // se completa cuando el usuario confirma
-
+useEffect(() => {
+  if (!done) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L13')
+    .catch(err => console.error(err));
+}, [done]);
   return (
     <LessonShell
       id="L13"

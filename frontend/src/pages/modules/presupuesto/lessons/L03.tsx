@@ -3,7 +3,8 @@ import {
   Box, Paper, Stack, Typography, Chip, Button, LinearProgress
 } from '@mui/material';
 import LessonShell from '../LessonShell';
-
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect } from 'react';
 type Cat = 'fijo' | 'variable' | 'hormiga';
 type Item = {
   id: string;
@@ -43,7 +44,22 @@ export default function L03() {
   const choose = (id: string, cat: Cat) => {
     setAnswers(prev => ({ ...prev, [id]: cat }));
   };
+// Efecto para guardar progreso cuando se gana
+  useEffect(() => {
+    // 1. La condición de completado es 'allCorrect'
+    // (que sea true solo si ya contestó todo Y todo está bien)
+    if (!allCorrect) return;
 
+    // 2. Guardamos el progreso especificando la lección L03
+    lessonProgressRepository
+      .setCompleted('presupuesto', 'L03')
+      .then(() => {
+        console.log('¡Lección L03 completada y guardada!');
+        // Aquí podrías disparar un confetti o un modal de éxito si tienes uno
+      })
+      .catch(err => console.error('Error guardando progreso offline L03', err));
+      
+  }, [allCorrect]); // Se ejecuta cada vez que 'allCorrect' cambia
   return (
     <LessonShell
       id="L03"

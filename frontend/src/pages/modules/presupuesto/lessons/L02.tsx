@@ -1,4 +1,4 @@
-import { useState } from 'react';
+
 import {
   Stack,
   Typography,
@@ -10,6 +10,8 @@ import {
   LinearProgress,
 } from '@mui/material';
 import LessonShell from '../LessonShell';
+import { useEffect, useState } from 'react';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
 
 type Answer = 'a' | 'b' | 'c' | null;
 
@@ -25,6 +27,16 @@ export default function L02() {
     Number(q2 === 'b') + // Horas extra = ingreso variable
     Number(q3 === 'b');  // Comisiones por venta = variable
   const isPerfect = correctCount === 3;
+useEffect(() => {
+    if (!isPerfect) return;
+
+    lessonProgressRepository
+      .setCompleted('presupuesto', 'L02')
+      .catch((err) =>
+        console.error('Error guardando progreso offline L02', err)
+      );
+  }, [isPerfect]);
+
 
   return (
     <LessonShell

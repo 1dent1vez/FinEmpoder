@@ -8,6 +8,8 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import LessonShell from '../LessonShell';
 import { useLessons } from '../../../../store/lessons';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect } from 'react';
 
 // ---------- Banco de preguntas ----------
 type Q = {
@@ -125,7 +127,14 @@ export default function L14() {
     // guarda el score real; LessonShell marca completado si passed
     complete('L14', score);
   };
+const success = submitted && passed;
 
+useEffect(() => {
+  if (!success) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L14')
+    .catch(err => console.error(err));
+}, [success]);
   return (
     <LessonShell
       id="L14"

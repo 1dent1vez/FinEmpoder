@@ -1,9 +1,11 @@
-import { useState } from 'react';
 import {
   Box, Paper, Stack, Typography, TextField, Button, IconButton, LinearProgress, Chip
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import LessonShell from '../LessonShell';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect, useState } from 'react';
+
 
 type Row = { id: string; label: string; amount: number };
 const ORANGE = '#F5B041';
@@ -59,7 +61,14 @@ export default function L06() {
     }
   };
   // ────────────────────────────────────────────────────────────────────────────
+const complete = hasIncome && hasExpense;
 
+useEffect(() => {
+  if (!complete) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L06')
+    .catch(err => console.error(err));
+}, [complete]);
   return (
     <LessonShell
       id="L06"

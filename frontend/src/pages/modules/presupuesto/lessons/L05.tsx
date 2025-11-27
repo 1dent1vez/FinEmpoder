@@ -3,6 +3,9 @@ import {
   Box, Stack, Paper, Typography, Chip, TextField, LinearProgress
 } from '@mui/material';
 import LessonShell from '../LessonShell';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect} from 'react';
+
 
 type CatKey = 'Vivienda' | 'Comida' | 'Transporte';
 type Item = { id: string; label: string; amount: number };
@@ -95,7 +98,12 @@ export default function L05() {
       (Number(limitsOk) * 15) +                   // 15% por fijar límites
       (Number(withinLimits) * 15),               // 15% por respetarlos
     );
-
+useEffect(() => {
+  if (!complete) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L05')
+    .catch(err => console.error(err));
+}, [complete]);
   return (
     <LessonShell
       id="L05"

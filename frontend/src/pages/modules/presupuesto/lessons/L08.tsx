@@ -11,7 +11,7 @@ import StopIcon from '@mui/icons-material/Stop';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import LessonShell from '../LessonShell';
-
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
 const ORANGE = '#F5B041';
 
 // Checkpoints cronometrados (segundos desde el inicio del TTS)
@@ -211,7 +211,12 @@ export default function L08() {
     const idx = Number(e.target.value);
     setVoiceIndex(Number.isNaN(idx) ? -1 : idx);
   };
-
+useEffect(() => {
+  if (!complete) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L08')
+    .catch(err => console.error(err));
+}, [complete]);
   return (
     <LessonShell
       id="L08"

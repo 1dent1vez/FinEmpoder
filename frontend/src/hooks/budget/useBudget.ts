@@ -1,10 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { budgetApi, type BudgetCreate } from '../../api/budget.api';
 import { useProgress } from '../../store/progress';
+import { budgetApi, type BudgetQuery, type BudgetCreate } from '../../api/budget.api';
 
-export function useBudgetList(filters?: { from?: string; to?: string; type?: string; category?: string }) {
-  return useQuery({ queryKey: ['budget', filters], queryFn: () => budgetApi.list(filters) });
-}
+
+export const useBudgetList = (filters?: BudgetQuery) => { 
+  return useQuery({
+    queryKey: ['budget', filters],
+    queryFn: () => budgetApi.list(filters), // Ahora coinciden perfectamente
+    staleTime: 1000 * 60 * 5, // opcional: 5 minutos
+  });
+};
 export function useBudgetCreate() {
   const qc = useQueryClient();
   const progress = useProgress();

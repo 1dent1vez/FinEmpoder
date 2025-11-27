@@ -1,7 +1,19 @@
+import { useEffect, useState } from 'react';
 import {
-  AppBar, Toolbar, IconButton, Box, Stack, Typography, Paper,
-  LinearProgress, List, ListItemButton, ListItemAvatar, Avatar,
-  ListItemText, Chip
+  AppBar,
+  Toolbar,
+  IconButton,
+  Box,
+  Stack,
+  Typography,
+  Paper,
+  LinearProgress,
+  List,
+  ListItemButton,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  Chip
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import LockIcon from '@mui/icons-material/Lock';
@@ -11,6 +23,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import SportsScoreIcon from '@mui/icons-material/SportsScore';
 import { useNavigate } from 'react-router-dom';
 import { useLessons } from '../../../store/lessons';
+import { lessonProgressRepository } from '../../../db/lessonProgress.repository';
 
 function KindIcon({ kind }: { kind: string }) {
   if (kind === 'quiz') return <QuizIcon />;
@@ -21,8 +34,53 @@ function KindIcon({ kind }: { kind: string }) {
 
 export default function PresupuestoOverview() {
   const nav = useNavigate();
-  const { lessons, isUnlocked } = useLessons();
-  const progress = useLessons((s) => s.moduleProgress);
+  const { lessons } = useLessons();
+
+  // Mapa de progreso local: { L01: true, L02: false, ... }
+  const [completedMap, setCompletedMap] = useState<Record<string, boolean>>({});
+  const [progressPercent, setProgressPercent] = useState(0);
+
+  // Cargar progreso desde IndexedDB al montar
+  useEffect(() => {
+    lessonProgressRepository
+      .getModuleProgress('presupuesto')
+      .then((rows) => {
+        const map: Record<string, boolean> = {};
+        rows.forEach((r) => {
+          if (r.completed) {
+            map[r.lessonId] = true;
+          }
+        });
+        setCompletedMap(map);
+      })
+      .catch((err) => {
+        console.error('Error cargando progreso offline de presupuesto', err);
+      });
+  }, []);
+
+  // Calcular porcentaje de avance del módulo en función de las lecciones completadas
+  useEffect(() => {
+    if (!lessons || lessons.length === 0) {
+      setProgressPercent(0);
+      return;
+    }
+
+    const total = lessons.length;
+    const completedCount = lessons.filter((l) => completedMap[l.id]).length;
+    const percent = Math.round((completedCount / total) * 100);
+    setProgressPercent(percent);
+  }, [lessons, completedMap]);
+
+  // Lógica de desbloqueo progresivo: L01 siempre, las demás dependen de la anterior
+  const isLessonUnlocked = (lessonId: string): boolean => {
+    const num = Number(lessonId.replace('L', ''));
+
+    // L01 siempre disponible
+    if (num === 1 || Number.isNaN(num)) return true;
+
+    const prevId = `L${String(num - 1).padStart(2, '0')}`;
+    return completedMap[prevId] === true;
+  };
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#FAFAFA' }}>
@@ -46,7 +104,7 @@ export default function PresupuestoOverview() {
             p: 2,
             mb: 2,
             borderRadius: 4,
-            background: 'linear-gradient(180deg,#FFE6BF 0%, #FFF4E3 100%)',
+            background: 'linear-gradient(180deg,#FFE6BF 0%, #FFF4E3 100%)'
           }}
         >
           <Typography fontWeight={800} sx={{ mb: 0.5, color: '#BF7B0E' }}>
@@ -54,17 +112,17 @@ export default function PresupuestoOverview() {
           </Typography>
           <Stack direction="row" alignItems="center" spacing={2}>
             <Typography sx={{ fontSize: 32, fontWeight: 900, color: '#BF7B0E', minWidth: 72 }}>
-              {progress}%
+              {progressPercent}%
             </Typography>
             <Box sx={{ flex: 1 }}>
               <LinearProgress
                 variant="determinate"
-                value={progress}
+                value={progressPercent}
                 sx={{
                   height: 10,
                   borderRadius: 6,
                   bgcolor: '#FFEBD1',
-                  '& .MuiLinearProgress-bar': { bgcolor: '#F39C12' },
+                  '& .MuiLinearProgress-bar': { bgcolor: '#F39C12' }
                 }}
               />
               <Typography variant="caption" color="text.secondary">
@@ -78,7 +136,8 @@ export default function PresupuestoOverview() {
         <Paper elevation={0} sx={{ borderRadius: 4, bgcolor: '#FFFFFF' }}>
           <List disablePadding>
             {lessons.map((l, idx) => {
-              const unlocked = isUnlocked(l.id);
+              const completed = !!completedMap[l.id] || !!l.completed;
+              const unlocked = isLessonUnlocked(l.id);
 
               return (
                 <ListItemButton
@@ -88,18 +147,18 @@ export default function PresupuestoOverview() {
                   sx={{
                     py: 1.25,
                     opacity: unlocked ? 1 : 0.5,
-                    borderBottom: idx < lessons.length - 1 ? '1px solid #F1F1F1' : 'none',
+                    borderBottom: idx < lessons.length - 1 ? '1px solid #F1F1F1' : 'none'
                   }}
                 >
                   <ListItemAvatar>
                     <Avatar
                       sx={{
-                        bgcolor: l.completed ? '#E8F5E9' : '#FFF3E0',
-                        color: l.completed ? '#2E7D32' : '#E67E22',
-                        fontWeight: 800,
+                        bgcolor: completed ? '#E8F5E9' : '#FFF3E0',
+                        color: completed ? '#2E7D32' : '#E67E22',
+                        fontWeight: 800
                       }}
                     >
-                      {l.completed ? <CheckCircleIcon /> : <KindIcon kind={l.kind} />}
+                      {completed ? <CheckCircleIcon /> : <KindIcon kind={l.kind} />}
                     </Avatar>
                   </ListItemAvatar>
 
@@ -112,18 +171,27 @@ export default function PresupuestoOverview() {
                     }
                     secondary={
                       <Typography variant="caption" color="text.secondary">
-                        {l.completed ? 'Completada' : unlocked ? 'Disponible' : 'Bloqueada'}
+                        {completed
+                          ? 'Completada'
+                          : unlocked
+                          ? 'Disponible'
+                          : 'Bloqueada'}
                       </Typography>
                     }
                   />
 
                   {/* Estado a la derecha */}
-                  {l.completed ? (
+                  {completed ? (
                     <Chip color="success" size="small" label="Listo" />
                   ) : unlocked ? (
                     <Chip size="small" label="Empezar" sx={{ bgcolor: '#FFF3E0' }} />
                   ) : (
-                    <Chip size="small" icon={<LockIcon />} label="Bloqueada" variant="outlined" />
+                    <Chip
+                      size="small"
+                      icon={<LockIcon />}
+                      label="Bloqueada"
+                      variant="outlined"
+                    />
                   )}
                 </ListItemButton>
               );

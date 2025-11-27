@@ -8,6 +8,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import SaveIcon from '@mui/icons-material/Save';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import LessonShell from '../LessonShell';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect } from 'react';
 
 type Row = { id: string; label: string; amount: number; bucket: 'necesidades'|'deseos'|'ahorro' };
 const ORANGE = '#F5B041';
@@ -79,7 +81,12 @@ export default function L15() {
     a.click();
     URL.revokeObjectURL(a.href);
   };
-
+useEffect(() => {
+  if (!ready) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L15')
+    .catch(err => console.error(err));
+}, [ready]);
   return (
     <LessonShell
       id="L15"

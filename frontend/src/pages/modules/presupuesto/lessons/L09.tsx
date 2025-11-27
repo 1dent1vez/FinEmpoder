@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { Box, Paper, Stack, Typography, Slider, Chip, Button, Alert } from '@mui/material';
 import LessonShell from '../LessonShell';
 import { useLessons } from '../../../../store/lessons';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect } from 'react';
 
 const ORANGE = '#F5B041';
 
@@ -39,7 +41,12 @@ export default function L09() {
                                  #81C784 ${split.needs + split.wants}% 100%)`,
     boxShadow: '0 6px 18px rgba(0,0,0,.12)',
   } as const;
-
+useEffect(() => {
+  if (!isRecommended) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L09')
+    .catch(err => console.error(err));
+}, [isRecommended]);
   return (
     <LessonShell
       id="L09"

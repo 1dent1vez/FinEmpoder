@@ -4,6 +4,8 @@ import {
   Alert, Divider, LinearProgress, Button
 } from '@mui/material';
 import LessonShell from '../LessonShell';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect } from 'react';
 
 const ORANGE = '#F5B041';
 
@@ -136,7 +138,14 @@ export default function L12() {
     (allAnswered ? 70 : (Object.values(answers).filter(Boolean).length / 5) * 70)
     + (viability ? 30 : 0)
   );
+const complete = allAnswered && viability;
 
+useEffect(() => {
+  if (!complete) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L12')
+    .catch(err => console.error(err));
+}, [complete]);
   return (
     <LessonShell
       id="L12"

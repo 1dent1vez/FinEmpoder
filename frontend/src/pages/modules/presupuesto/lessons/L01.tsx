@@ -1,4 +1,4 @@
-import { useState } from 'react';
+
 import {
   Typography,
   Box,
@@ -15,6 +15,9 @@ import PsychologyIcon from '@mui/icons-material/Psychology';
 import TipsAndUpdatesIcon from '@mui/icons-material/TipsAndUpdates';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import HomeIcon from '@mui/icons-material/Home';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect, useState } from 'react';
+
 
 export default function L01() {
   const [step, setStep] = useState(0);
@@ -28,6 +31,13 @@ export default function L01() {
   };
 
   const next = () => setStep((s) => Math.min(s + 1, 2));
+useEffect(() => {
+  if (!correct) return; // si la condición aún no se cumple, no hagas nada
+
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L01')
+    .catch(err => console.error('Error guardando progreso offline L01', err));
+}, [correct]);
 
   return (
     <LessonShell

@@ -2,6 +2,8 @@ import { useMemo, useState } from 'react';
 import { Box, Paper, Stack, Typography, TextField, Slider, Chip, Button, Alert, LinearProgress, Divider } from '@mui/material';
 import LessonShell from '../LessonShell';
 import { useLessons } from '../../../../store/lessons';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect } from 'react';
 
 const ORANGE = '#F5B041';
 
@@ -32,7 +34,12 @@ export default function L10() {
   }, [what, measure, achieve, relevant, deadline]);
 
   const completeOK = score === 5 && target > 0 && weekly > 0;
-
+useEffect(() => {
+  if (!completeOK) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L10')
+    .catch(err => console.error(err));
+}, [completeOK]);
   return (
     <LessonShell
       id="L10"

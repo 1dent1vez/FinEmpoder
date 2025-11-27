@@ -5,6 +5,8 @@ import {
 } from '@mui/material';
 import LessonShell from '../LessonShell';
 import { useLessons } from '../../../../store/lessons';
+import { lessonProgressRepository } from '../../../../db/lessonProgress.repository';
+import { useEffect } from 'react';
 
 const ORANGE = '#F5B041';
 
@@ -29,7 +31,12 @@ export default function L11() {
   };
 
   const back = () => setActive(i => Math.max(0, i - 1));
-
+useEffect(() => {
+  if (!allDone) return;
+  lessonProgressRepository
+    .setCompleted('presupuesto', 'L11')
+    .catch(err => console.error(err));
+}, [allDone]);
   return (
     <LessonShell
       id="L11"

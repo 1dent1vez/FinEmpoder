@@ -32,6 +32,10 @@ import L13 from './pages/modules/presupuesto/lessons/L13';
 import L14 from './pages/modules/presupuesto/lessons/L14';
 import L15 from './pages/modules/presupuesto/lessons/L15';
 
+// NUEVOS IMPORTS
+import { useOnlineStatus } from './hooks/useOnlineStatus';
+import OfflineBanner from './components/OfflineBanner';
+
 // Home
 
 function HomePage() {
@@ -53,56 +57,60 @@ function RootGate() {
 
 export default function App() {
   const hasHydrated = useAuth.persist.hasHydrated();
+  const online = useOnlineStatus(); // AQUÍ DETECTAS LA CONEXIÓN
+
   if (!hasHydrated) return <p style={{ padding: 24 }}>Cargando sesión...</p>;
 
   return (
-    <Routes>
-      {/* Onboarding público (forzado a nuevos usuarios) */}
-      <Route path="/onboarding/1" element={<Screen1 />} />
-      <Route path="/onboarding/2" element={<Screen2 />} />
-      <Route path="/onboarding/3" element={<Screen3 />} />
+    <>
+      {!online && <OfflineBanner dense />}
 
-      {/* Auth público */}
-      <Route path="/login" element={<LoginPage />} />
-      <Route path="/signup" element={<SignUpPage />} />
+      <Routes>
+        {/* Onboarding público (forzado a nuevos usuarios) */}
+        <Route path="/onboarding/1" element={<Screen1 />} />
+        <Route path="/onboarding/2" element={<Screen2 />} />
+        <Route path="/onboarding/3" element={<Screen3 />} />
 
-      {/* Legales público */}
-      <Route path="/terms" element={<Terms />} />
-      <Route path="/privacy" element={<Privacy />} />
+        {/* Auth público */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<SignUpPage />} />
 
-      {/* Raíz */}
-      <Route path="/" element={<RootGate />} />
+        {/* Legales público */}
+        <Route path="/terms" element={<Terms />} />
+        <Route path="/privacy" element={<Privacy />} />
 
-      {/* ZONA PRIVADA */}
-      <Route element={<PrivateRoute />}>
-        <Route path="/app" element={<Home />} />
-        <Route path="/search" element={<p style={{ padding: 24 }}>Buscar (próximo)</p>} />
-        <Route path="/achievements" element={<p style={{ padding: 24 }}>Logros (próximo)</p>} />
-        <Route path="/profile" element={<p style={{ padding: 24 }}>Perfil (próximo)</p>} />
+        {/* Raíz */}
+        <Route path="/" element={<RootGate />} />
 
-        {/* Módulo Presupuestación */}
-        <Route path="/app/presupuesto" element={<PresupuestoOverview />} />
-        <Route path="/app/presupuesto/lesson/L01" element={<L01 />} />
-        <Route path="/app/presupuesto/lesson/L02" element={<L02 />} />
-        <Route path="/app/presupuesto/lesson/L03" element={<L03 />} />
-        <Route path="/app/presupuesto/lesson/L04" element={<L04 />} />
-        <Route path="/app/presupuesto/lesson/L05" element={<L05 />} />
-        <Route path="/app/presupuesto/lesson/L06" element={<L06 />} />
-        <Route path="/app/presupuesto/lesson/L07" element={<L07 />} />
-        <Route path="/app/presupuesto/lesson/L08" element={<L08 />} />
-        <Route path="/app/presupuesto/lesson/L09" element={<L09 />} />
-        <Route path="/app/presupuesto/lesson/L10" element={<L10 />} />
-        <Route path="/app/presupuesto/lesson/L11" element={<L11 />} />
-        <Route path="/app/presupuesto/lesson/L12" element={<L12 />} />
-        <Route path="/app/presupuesto/lesson/L13" element={<L13 />} />
-        <Route path="/app/presupuesto/lesson/L14" element={<L14 />} />
-        <Route path="/app/presupuesto/lesson/L15" element={<L15 />} />
+        {/* ZONA PRIVADA */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/app" element={<Home />} />
+          <Route path="/search" element={<p style={{ padding: 24 }}>Buscar (próximo)</p>} />
+          <Route path="/achievements" element={<p style={{ padding: 24 }}>Logros (próximo)</p>} />
+          <Route path="/profile" element={<p style={{ padding: 24 }}>Perfil (próximo)</p>} />
 
-        {/* Añade aquí L03..L15 cuando las vayas creando */}
-      </Route>
+          {/* Módulo Presupuestación */}
+          <Route path="/app/presupuesto" element={<PresupuestoOverview />} />
+          <Route path="/app/presupuesto/lesson/L01" element={<L01 />} />
+          <Route path="/app/presupuesto/lesson/L02" element={<L02 />} />
+          <Route path="/app/presupuesto/lesson/L03" element={<L03 />} />
+          <Route path="/app/presupuesto/lesson/L04" element={<L04 />} />
+          <Route path="/app/presupuesto/lesson/L05" element={<L05 />} />
+          <Route path="/app/presupuesto/lesson/L06" element={<L06 />} />
+          <Route path="/app/presupuesto/lesson/L07" element={<L07 />} />
+          <Route path="/app/presupuesto/lesson/L08" element={<L08 />} />
+          <Route path="/app/presupuesto/lesson/L09" element={<L09 />} />
+          <Route path="/app/presupuesto/lesson/L10" element={<L10 />} />
+          <Route path="/app/presupuesto/lesson/L11" element={<L11 />} />
+          <Route path="/app/presupuesto/lesson/L12" element={<L12 />} />
+          <Route path="/app/presupuesto/lesson/L13" element={<L13 />} />
+          <Route path="/app/presupuesto/lesson/L14" element={<L14 />} />
+          <Route path="/app/presupuesto/lesson/L15" element={<L15 />} />
+        </Route>
 
-      {/* Fallback */}
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+        {/* Fallback */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </>
   );
 }
