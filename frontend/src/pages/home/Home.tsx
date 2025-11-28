@@ -8,7 +8,7 @@ import {
   Avatar,
   Chip,
   IconButton,
-  Divider,
+  Divider
 } from '@mui/material';
 import SavingsIcon from '@mui/icons-material/Savings';
 import SchoolIcon from '@mui/icons-material/School';
@@ -22,7 +22,6 @@ import { useNavigate } from 'react-router-dom';
 import { useProgress } from '../../store/progress';
 import { useAuth } from '../../store/auth';
 import { useLessons } from '../../store/lessons';
-
 
 const ORANGE = '#F5B041';
 const ORANGE_DK = '#F39C12';
@@ -43,7 +42,7 @@ function ModuleCard(props: {
         bgcolor: '#fff',
         display: 'flex',
         flexDirection: 'column',
-        gap: 1,
+        gap: 1
       }}
     >
       <Stack direction="row" alignItems="center" spacing={1.5}>
@@ -69,7 +68,7 @@ function ModuleCard(props: {
           height: 8,
           borderRadius: 6,
           bgcolor: '#f1f1f1',
-          '& .MuiLinearProgress-bar': { bgcolor: ORANGE },
+          '& .MuiLinearProgress-bar': { bgcolor: ORANGE }
         }}
       />
       <Stack direction="row" justifyContent="space-between" alignItems="center">
@@ -83,7 +82,7 @@ function ModuleCard(props: {
           sx={{
             textTransform: 'none',
             bgcolor: ORANGE,
-            '&:hover': { bgcolor: ORANGE_DK },
+            '&:hover': { bgcolor: ORANGE_DK }
           }}
         >
           Entrar
@@ -94,12 +93,8 @@ function ModuleCard(props: {
 }
 
 function StreakCard() {
-  // Esperamos que useProgress exponga 'streak' { current, best, lastActiveISO }
-  // Si aún no existe en tu store, se mostrará 0 por defecto.
- const streak = useProgress((s) => s.streak);
-const todayDone = useProgress((s) => s.todayDone);
-//const mod = useProgress((s) => s.modules.presupuesto);
-
+  const streak = useProgress((s) => s.streak);
+  const todayDone = useProgress((s) => s.todayDone);
 
   return (
     <Paper
@@ -108,7 +103,7 @@ const todayDone = useProgress((s) => s.todayDone);
         p: 2.25,
         borderRadius: 4,
         background: 'linear-gradient(180deg, #FFF3E0 0%, #FFE8C7 100%)',
-        border: `1px solid ${ORANGE}20`,
+        border: `1px solid ${ORANGE}20`
       }}
     >
       <Stack direction="row" alignItems="center" spacing={1.5}>
@@ -118,23 +113,23 @@ const todayDone = useProgress((s) => s.todayDone);
             borderRadius: '50%',
             bgcolor: '#FFF',
             boxShadow: '0 4px 12px rgba(0,0,0,.06)',
-            color: ORANGE_DK,
+            color: ORANGE_DK
           }}
         >
           <LocalFireDepartmentIcon />
         </Box>
         <Box sx={{ flex: 1 }}>
           <Typography fontWeight={900} sx={{ lineHeight: 1, fontSize: 18 }}>
-            Racha activa: {streak.current ?? 0} días
+            Racha activa: {streak.current ?? 0} dias
           </Typography>
           <Typography variant="caption" color="text.secondary">
-            Mejor racha: {streak.best ?? 0} días
+            Mejor racha: {streak.best ?? 0} dias
           </Typography>
         </Box>
         <Chip
           color={todayDone ? 'success' : 'warning'}
           variant="filled"
-          label={todayDone ? '¡Hecho hoy!' : 'Falta hoy'}
+          label={todayDone ? 'Hecho hoy!' : 'Falta hoy'}
           sx={{ fontWeight: 700 }}
         />
       </Stack>
@@ -149,10 +144,10 @@ function DailyTip() {
         <CalendarTodayIcon sx={{ color: ORANGE_DK }} />
         <Box sx={{ flex: 1 }}>
           <Typography fontWeight={800} sx={{ fontSize: 14 }}>
-            Tip del día
+            Tip del dia
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            Separa primero el ahorro (5–10%) y vive con el resto. ¡Automatiza tu progreso!
+            Separa primero el ahorro (5-10%) y vive con el resto. Automatiza tu progreso.
           </Typography>
         </Box>
       </Stack>
@@ -165,7 +160,6 @@ export default function Home() {
   const mod = useProgress((s) => s.modules);
   const { user } = useAuth();
 
-  // “Continuar” — toma la siguiente lección pendiente de Presupuesto
   const lessons = useLessons((s) => s.lessons);
   const next = lessons.find((l) => !l.completed);
   const nextPath = next ? `/app/presupuesto/lesson/${next.id}` : '/app/presupuesto';
@@ -179,17 +173,16 @@ export default function Home() {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
-        gap: 2,
+        gap: 2
       }}
     >
-      {/* Tarjeta de bienvenida */}
       <Paper
         elevation={3}
         sx={{
           borderRadius: 4,
           p: 3,
           background: 'linear-gradient(180deg,#F5B041 0%, #F39C12 100%)',
-          color: '#fff',
+          color: '#fff'
         }}
       >
         <Stack direction="row" alignItems="center" spacing={2}>
@@ -200,14 +193,14 @@ export default function Home() {
               bgcolor: '#fff',
               color: ORANGE_DK,
               fontWeight: 700,
-              fontSize: 24,
+              fontSize: 24
             }}
           >
             {user?.email?.[0]?.toUpperCase() ?? 'U'}
           </Avatar>
           <Box sx={{ flex: 1 }}>
             <Typography fontWeight={900} sx={{ fontSize: 18 }}>
-              ¡Hola, {user?.email?.split('@')[0] ?? 'Estudiante'}!
+              Hola, {user?.email?.split('@')[0] ?? 'Estudiante'}!
             </Typography>
             <Typography variant="body2" sx={{ opacity: 0.9 }}>
               Nivel: Aprendiz Financiero
@@ -220,7 +213,6 @@ export default function Home() {
           />
         </Stack>
 
-        {/* CTA continuar */}
         <Stack direction="row" justifyContent="flex-end" sx={{ mt: 2 }}>
           <Button
             onClick={() => nav(nextPath)}
@@ -231,7 +223,7 @@ export default function Home() {
               bgcolor: '#fff',
               color: ORANGE_DK,
               fontWeight: 800,
-              '&:hover': { bgcolor: '#fff' },
+              '&:hover': { bgcolor: '#fff' }
             }}
             endIcon={<ArrowForwardIosIcon fontSize="small" />}
           >
@@ -240,19 +232,17 @@ export default function Home() {
         </Stack>
       </Paper>
 
-      {/* Racha */}
       <StreakCard />
 
-      {/* Acciones rápidas */}
       <Paper elevation={0} sx={{ p: 1.5, borderRadius: 4 }}>
-        <Stack direction="row" spacing={1} alignItems="center">
+        <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
           <Button
             variant="outlined"
             onClick={() => nav('/app/presupuesto')}
             sx={{ textTransform: 'none', borderColor: ORANGE, color: ORANGE_DK }}
             startIcon={<SavingsIcon />}
           >
-            Ir al módulo
+            Ir al modulo
           </Button>
           <Button
             variant="outlined"
@@ -260,7 +250,7 @@ export default function Home() {
             sx={{ textTransform: 'none', borderColor: ORANGE, color: ORANGE_DK }}
             startIcon={<ArrowForwardIosIcon />}
           >
-            Siguiente lección
+            Siguiente leccion
           </Button>
           <Button
             variant="outlined"
@@ -273,17 +263,15 @@ export default function Home() {
         </Stack>
       </Paper>
 
-      {/* Tip del día */}
       <DailyTip />
 
-      {/* Módulos */}
       <Typography variant="h6" fontWeight={900} sx={{ mt: 1 }}>
-        Tus módulos
+        Tus modulos
       </Typography>
 
       <Stack spacing={2}>
         <ModuleCard
-          title="Presupuestación"
+          title="Presupuestacion"
           subtitle="Organiza ingresos y gastos"
           progress={mod.presupuesto?.progress ?? 0}
           icon={<SavingsIcon sx={{ color: ORANGE_DK }} />}
@@ -292,26 +280,25 @@ export default function Home() {
 
         <ModuleCard
           title="Ahorro programado"
-          subtitle="Crea hábitos de ahorro"
+          subtitle="Crea habitos de ahorro"
           progress={mod.ahorro?.progress ?? 0}
           icon={<SchoolIcon sx={{ color: '#58D68D' }} />}
-          onOpen={() => nav('/app')} // Ajustar cuando exista el módulo
+          onOpen={() => nav('/app/ahorro')}
         />
 
         <ModuleCard
-          title="Inversión básica"
+          title="Inversion basica"
           subtitle="Haz crecer tu dinero"
           progress={mod.inversion?.progress ?? 0}
           icon={<ShowChartIcon sx={{ color: '#5DADE2' }} />}
-          onOpen={() => nav('/app')} // Ajustar cuando exista el módulo
+          onOpen={() => nav('/app')}
         />
       </Stack>
 
       <Divider sx={{ my: 1 }} />
 
-      {/* Footer mini */}
       <Typography variant="caption" color="text.secondary" align="center">
-        FinEmpoder · Aprende, practica y crece 🚀
+        FinEmpoder - Aprende, practica y crece.
       </Typography>
     </Box>
   );
