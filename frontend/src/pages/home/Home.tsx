@@ -298,12 +298,12 @@ export default function Home() {
           onOpen={() => nav('/app')} // Ajustar cuando exista el módulo
         />
 
-        <ModuleCard
+       <ModuleCard
           title="Inversión básica"
           subtitle="Haz crecer tu dinero"
           progress={mod.inversion?.progress ?? 0}
           icon={<ShowChartIcon sx={{ color: '#5DADE2' }} />}
-          onOpen={() => nav('/app')} // Ajustar cuando exista el módulo
+          onOpen={() => nav('/app/inversion')} // o '/app/inversion/overview'
         />
       </Stack>
 
