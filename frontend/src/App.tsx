@@ -51,6 +51,25 @@ import AhorroL13 from './pages/modules/ahorro/lessons/L13';
 import AhorroL14 from './pages/modules/ahorro/lessons/L14';
 import AhorroL15 from './pages/modules/ahorro/lessons/L15';
 
+// Módulo Inversión
+import InversionIndex from './pages/modules/inversion/Index';
+import InvestmentOverview from './pages/modules/inversion/Overview';
+import InvL01 from './pages/modules/inversion/lessons/L01';
+import InvL02 from './pages/modules/inversion/lessons/L02';
+import InvL03 from './pages/modules/inversion/lessons/L03';
+import InvL04 from './pages/modules/inversion/lessons/L04';
+import InvL05 from './pages/modules/inversion/lessons/L05';
+import InvL06 from './pages/modules/inversion/lessons/L06';
+import InvL07 from './pages/modules/inversion/lessons/L07';
+import InvL08 from './pages/modules/inversion/lessons/L08';
+import InvL09 from './pages/modules/inversion/lessons/L09';
+import InvL10 from './pages/modules/inversion/lessons/L10';
+import InvL11 from './pages/modules/inversion/lessons/L11';
+import InvL12 from './pages/modules/inversion/lessons/L12';
+import InvL13 from './pages/modules/inversion/lessons/L13';
+import InvL14 from './pages/modules/inversion/lessons/L14';
+import InvL15 from './pages/modules/inversion/lessons/L15';
+
 // NUEVOS IMPORTS
 import { useOnlineStatus } from './hooks/useOnlineStatus';
 import OfflineBanner from './components/OfflineBanner';
@@ -123,6 +142,25 @@ export default function App() {
           <Route path="/app/presupuesto/lesson/L13" element={<L13 />} />
           <Route path="/app/presupuesto/lesson/L14" element={<L14 />} />
           <Route path="/app/presupuesto/lesson/L15" element={<L15 />} />
+
+          {/* Módulo Inversión */}
+          <Route path="/app/inversion" element={<InversionIndex />} />
+          <Route path="/app/inversion/overview" element={<InvestmentOverview />} />
+          <Route path="/app/inversion/lesson/L01" element={<InvL01 />} />
+          <Route path="/app/inversion/lesson/L02" element={<InvL02 />} />
+          <Route path="/app/inversion/lesson/L03" element={<InvL03 />} />
+          <Route path="/app/inversion/lesson/L04" element={<InvL04 />} />
+          <Route path="/app/inversion/lesson/L05" element={<InvL05 />} />
+          <Route path="/app/inversion/lesson/L06" element={<InvL06 />} />
+          <Route path="/app/inversion/lesson/L07" element={<InvL07 />} />
+          <Route path="/app/inversion/lesson/L08" element={<InvL08 />} />
+          <Route path="/app/inversion/lesson/L09" element={<InvL09 />} />
+          <Route path="/app/inversion/lesson/L10" element={<InvL10 />} />
+          <Route path="/app/inversion/lesson/L11" element={<InvL11 />} />
+          <Route path="/app/inversion/lesson/L12" element={<InvL12 />} />
+          <Route path="/app/inversion/lesson/L13" element={<InvL13 />} />
+          <Route path="/app/inversion/lesson/L14" element={<InvL14 />} />
+          <Route path="/app/inversion/lesson/L15" element={<InvL15 />} />
 
           {/* Modulo Ahorro */}
           <Route path="/app/ahorro" element={<AhorroOverview />} />
